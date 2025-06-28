@@ -282,11 +282,6 @@ if(PROJECT_IS_TOP_LEVEL)
     if(BUILD_EXAMPLES)
         add_subdirectory(example)
     endif()
-
-    option(BUILD_MEDIA_MAN "Build media man." "${dsk_DEVELOPER_MODE}")
-    if(BUILD_MEDIA_MAN)
-        add_subdirectory(media_man)
-    endif()
 endif()
 
 # ---- Developer mode ----
