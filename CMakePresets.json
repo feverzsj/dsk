@@ -1,0 +1,282 @@
+{
+    "version": 5,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 26,
+        "patch": 0
+    },
+    "configurePresets": [
+
+
+        {
+            "name": "conf-common",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "DEFAULT_ALLOCATOR": "mimalloc",
+                "dsk_DEVELOPER_MODE": "ON"
+            },
+            "environment": {
+                "common_gcc_flags": "-std=c++26 -Wall -Wextra -Wformat=2 -ftemplate-backtrace-limit=10 -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wrestrict -Wnull-dereference",
+                "common_clang_flags": "-std=c++26 -Wall -Wextra -Wformat=2 -ftemplate-backtrace-limit=10",
+                "MIMALLOC_DISABLE_REDIRECT": "1"
+            }
+        },
+
+
+        {
+            "name": "windows-common",
+            "hidden": true,
+            "inherits": "conf-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "toolset": {
+                "value": "host=x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "VCPKG_TARGET_TRIPLET": "x64-windows"
+            },
+            "environment": {
+                "VCPKG_ROOT": "E:/lib/vcpkg",
+                "QTDIR": "E:/lib/qt/main/6.8.0/msvc2022_64",
+                "CMAKE_PREFIX_PATH": "$env{QTDIR}",
+                "PATH": "$env{QTDIR}/bin;$penv{PATH}"
+            }
+        },
+
+
+        {
+            "name": "msvc-common",
+            "hidden": true,
+            "inherits": "windows-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl",
+                "CMAKE_CXX_FLAGS": "/W4 /WX /permissive- /utf-8 /std:c++latest /EHsc /Zc:preprocessor"
+            }
+        },
+        {
+            "name": "msvc-debug",
+            "inherits": "msvc-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "msvc-release",
+            "inherits": "msvc-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "msvc-rel-with-debug-info",
+            "inherits": "msvc-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+
+
+        {
+            "name": "clang-cl-common",
+            "hidden": true,
+            "inherits": "windows-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang-cl",
+                "CMAKE_CXX_COMPILER": "clang-cl",
+                "CMAKE_CXX_FLAGS": "/W4 /WX /permissive- /utf-8 /std:c++latest /EHsc /clang:-ftemplate-backtrace-limit=0 /clang:-Wall /clang:-Wextra /clang:-Wformat=2"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "intelliSenseMode": "windows-clang-x64"
+                }
+            }
+        },
+        {
+            "name": "clang-cl-debug",
+            "inherits": "clang-cl-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "clang-cl-release",
+            "inherits": "clang-cl-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "clang-cl-rel-with-debug-info",
+            "inherits": "clang-cl-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+
+
+        {
+            "name": "win-clang-common",
+            "hidden": true,
+            "inherits": "windows-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_CXX_FLAGS": "$env{common_clang_flags}"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "intelliSenseMode": "windows-clang-x64"
+                }
+            }
+        },
+        {
+            "name": "win-clang-debug",
+            "inherits": "win-clang-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "__CMAKE_CXX_FLAGS_DEBUG": "-O1 -g -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined -D_ITERATOR_DEBUG_LEVEL=0",
+                "__unsuported_flags": "-fsanitize=thread"
+            }
+        },
+        {
+            "name": "win-clang-release",
+            "inherits": "win-clang-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "win-clang-rel-with-debug-info",
+            "inherits": "win-clang-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+
+
+        {
+            "name": "unixlike-common",
+            "hidden": true,
+            "inherits": "conf-common",
+            "condition": {
+                "type": "inList",
+                "string": "${hostSystemName}",
+                "list": [
+                    "Linux",
+                    "Darwin"
+                ]
+            },
+            "cacheVariables": {
+                "BUILD_MEDIA_MAN": "OFF"
+            },
+            "environment": {
+                "VCPKG_ROOT": "/home/vcpkg"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
+                    "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
+                }
+            }
+        },
+
+
+        {
+            "name": "unixlike-gcc-common",
+            "hidden": true,
+            "inherits": "unixlike-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_CXX_FLAGS": "$env{common_gcc_flags}"
+            }
+        },
+        {
+            "name": "unixlike-gcc-debug",
+            "inherits": "unixlike-gcc-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "unixlike-gcc-release",
+            "inherits": "unixlike-gcc-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "unixlike-gcc-rel-with-debug-info",
+            "inherits": "unixlike-gcc-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+
+
+        {
+            "name": "unixlike-clang-common",
+            "hidden": true,
+            "inherits": "unixlike-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_CXX_FLAGS": "$env{common_clang_flags}"
+            }
+        },
+        {
+            "name": "unixlike-clang-debug",
+            "inherits": "unixlike-clang-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "unixlike-clang-release",
+            "inherits": "unixlike-clang-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "unixlike-clang-rel-with-debug-info",
+            "inherits": "unixlike-clang-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        }
+
+
+    ],
+    "testPresets": [
+        {
+            "name": "test-common",
+            "hidden": true,
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "test-msvc-debug",
+            "displayName": "Strict",
+            "inherits": "test-common",
+            "configurePreset": "msvc-debug"
+        }
+    ]
+}
