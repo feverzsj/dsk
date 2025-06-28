@@ -6,16 +6,16 @@
 
 **And a rich collection of modules:**
 - [Async I/O](include/dsk/asio/)
-- Async http
-- Async Curl
-- Async GRPC
-- Async Redis client
-- Async MySQL client
-- Async PostgreSQL client
-- Sqlite
-- Json centric serialization (json, msgpack)
+- [Async http](include/dsk/http/)
+- [Async Curl](include/dsk/curl/)
+- [Async GRPC](include/dsk/grpc/)
+- [Async Redis client](include/dsk/redis/)
+- [Async MySQL client](include/dsk/mysql/)
+- [Async PostgreSQL client](include/dsk/pq/)
+- [Sqlite](include/dsk/sqlite3/)
+- [Json centric serialization](include/dsk/jser/) (json, msgpack)
 
-**Supported compiler and platfomrs:**
+**Supported compiler and platforms:**
 - Clang (20.1.6 or later) on windows and linux.
 
 **Exapmles:** [test/](test/), [example/](example/)
@@ -156,7 +156,7 @@ task<> handle_vals(auto... args)
 
 ## Async cancellation
 
-Async cancellation is built on `std::stop_source`. `std::stop_source` is passed to `_asyn_op_` via `_async_ctx_`, but it's disabled(as if constructed via `std::std::nostopstate`) by default. User must explicitly pass in an `_async_ctx_` with a valid `std::stop_source` to enable it.
+Async cancellation is built on `std::stop_source`. `std::stop_source` is passed to `_asyn_op_` via `_async_ctx_`, but it's disabled (as if constructed via `std::std::nostopstate`) by default. User must explicitly pass in an `_async_ctx_` with a valid `std::stop_source` to enable it.
 
 When a cancellable `_asyn_op_` is initiated, the stop callback is only added when `std::stop_source::stop_possible()` returns true. The cancellation is thread-safe as long as the stop callback is thread-safe.
 
@@ -368,7 +368,7 @@ A `_scheduler_` provides the core I/O functionality for users of the asynchronou
 
 Lightweight agent to `_scheduler_`. `_resumer_.post(callable)` is same as `_scheduler_.post(callable)`. `_resumer_`s can be compared for equality. If 2 `_resumer_`s reference the same `_scheduler_`, they are equal.
 
-`_async_op_` typically resumes `_continuation_` using `_resumer_` of `_async_ctx`.
+`_async_op_` typically resumes `_continuation_` using `_resumer_` of `_async_ctx_`.
 
 
 ## `_continuation_`
@@ -388,11 +388,11 @@ public:
     using is_async_ctx  = void;
 
     // Get std::stop_source. [optional]
-    // If not present, std::stop_souce(std::nostopstate) is returned.
+    // If not present, std::stop_souce(std::nostopstate) is used.
     decltype(auto) get_stop_source();
 
     // Get _resumer_. [optional]
-    // If not present, inline_resumer() is returned.
+    // If not present, inline_resumer is used.
     decltype(auto) get_resumer();
 
     // Add cleanup op. [optional]
@@ -432,7 +432,7 @@ public:
     // Take the result. [optional]
     // Return type can be value, void or lvalue reference.
     // Should be only called once, typically inside continuation.
-    // Can only be called ONCE after the op being finished.
+    // Can only be called ONCE after the op has finished.
     // No other method can be called after take_result().
     decltype(auto) take_result();
 };

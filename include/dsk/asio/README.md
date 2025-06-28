@@ -2,9 +2,21 @@
 Async I/O module is built on `asio`. Completion tokens are provied to adapt `asio` asynchronous operation to `_async_op_`. It also offers convenient wrappers for common `asio` classes and functions.
 
 
+## `io_uring`
+
+On linux, `io_uring` support is disabled by default. To enable it, a cmake option `ENABLE_IO_URING` is provided. It tries to find `liburing` as dependency of this module and configure `asio` to use `io_uring` instead of `epoll`.
+
+**NOTE:** File realted features on linux rely on `io_uring`.
+
+
+## Default `io_context`
+
+All classes/functions in this module use `DSK_DEFAULT_IO_CONTEXT` as default `io_context`, which defaults to `DSK_DEFAULT_IO_SCHEDULER.context()`.
+
+
 ## `use_async_op / use_async_op_for<T>`
 
-Completion token that adapts `asio` asynchronous operation to `_async_op_`.
+Completion tokens that adapt `asio` asynchronous operation to `_async_op_`.
 
 Result type is `expected<T>`, where `T` is the second paramter type of the asynchronous operation's completion signature.
 
@@ -45,7 +57,7 @@ task<> some_task()
 ```
 
 
-## send_file(socket, stream_file, send_file_options = {offset = 0, count = -1})
+## `send_file(socket, stream_file, send_file_options = {offset = 0, count = -1})`
 
 Sends `count` bytes started at `offset` from file to socket. If `count` is -1, all remaining bytes started at `offset` are sent.
 
@@ -54,7 +66,7 @@ The resutl type is `expected<size_t>` for sent bytes.
 Currently, zero copy sending is only supported on Windows via `TransmitFile`.
 
 
-## recv_file(socket, stream_file, recv_file_options = {offset = 0, count = -1})
+## `recv_file(socket, stream_file, recv_file_options = {offset = 0, count = -1})`
 
 Receives `count` bytes from socket to file started at `offset`. If `count` is -1, all remaining bytes until eof are received.
 
