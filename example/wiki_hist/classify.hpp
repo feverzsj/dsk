@@ -2316,7 +2316,7 @@ inline const unstable_unordered_set<uint32_t> ignoredClasses =
     3777387,    // former district of the canton of Bern
     7979513,    // Weekly Address of the President of the United States
     4502119,    // art group
-    10274693    // literary group
+    10274693,   // literary group
     132202154, // Aikido Seminar
     1470855, // pocket park
     21044675, // televised debate

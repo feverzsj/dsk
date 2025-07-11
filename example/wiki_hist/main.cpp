@@ -214,12 +214,12 @@ struct wiki_item
     optional<uint32_t>   location; // claims->P276->mainsnak->datavalue->value->id
     optional<uint32_t>   street;   // claims->P669->mainsnak->datavalue->value->id
     optional<uint32_t>   admin;    // claims->P131->mainsnak->datavalue->value->id
-    optional<uint32_t>   juri;      // claims->P1001->mainsnak->datavalue->value->id applies to jurisdiction
+    optional<uint32_t>   juri;     // claims->P1001->mainsnak->datavalue->value->id applies to jurisdiction
     optional<uint32_t>   country;  // claims->P17->mainsnak->datavalue->value->id
 
-    optional<wiki_date> start;// claims->P580->mainsnak->datavalue->value->time
-    optional<wiki_date> end;  // claims->P582->mainsnak->datavalue->value->time
-    optional<wiki_date> date; // claims->P585->mainsnak->datavalue->value->time
+    optional<wiki_date> start; // claims->P580->mainsnak->datavalue->value->time
+    optional<wiki_date> end;   // claims->P582->mainsnak->datavalue->value->time
+    optional<wiki_date> date;  // claims->P585->mainsnak->datavalue->value->time
 
     constexpr bool valid() const noexcept
     {
